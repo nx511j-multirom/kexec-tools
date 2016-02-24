@@ -664,7 +664,7 @@ int arm64_load_other_segments(struct kexec_info *info,
 			 * page size. */
 
 #if 1
-			initrd_base = 0x02700000; // from lk/project/msm8994.mk
+			initrd_base = 0x01f88000; // p1 ramdisk offset
 			add_segment_phys_virt(info, initrd_buf,
 				initrd_size, initrd_base, initrd_size, 0);
 #else
@@ -689,7 +689,7 @@ int arm64_load_other_segments(struct kexec_info *info,
 	}
 
 #if 1
-	dtb_base = 0x02500000; // from lk/project/msm8994.mk
+	dtb_base = 0x01d88000; // p1 dtb offset
 	add_segment_phys_virt(info, dtb_2.buf, dtb_2.size,
 		dtb_base, dtb_2.size, 0);
 #else
