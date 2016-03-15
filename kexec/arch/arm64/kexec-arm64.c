@@ -664,7 +664,7 @@ int arm64_load_other_segments(struct kexec_info *info,
 			 * page size. */
 
 #if 1
-			initrd_base = 0x01f88000; // p1 ramdisk offset
+            initrd_base = 0x01000000;  //nubia ramdisk offset
 			add_segment_phys_virt(info, initrd_buf,
 				initrd_size, initrd_base, initrd_size, 0);
 #else
@@ -689,7 +689,7 @@ int arm64_load_other_segments(struct kexec_info *info,
 	}
 
 #if 1
-	dtb_base = 0x01d88000; // p1 dtb offset
+    dtb_base = dtb_base =   0x00000100;   //nubia dtb offset
 	add_segment_phys_virt(info, dtb_2.buf, dtb_2.size,
 		dtb_base, dtb_2.size, 0);
 #else
