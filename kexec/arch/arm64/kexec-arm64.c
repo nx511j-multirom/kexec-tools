@@ -689,7 +689,7 @@ int arm64_load_other_segments(struct kexec_info *info,
 	}
 
 #if 1
-    dtb_base = dtb_base =   0x00000100;   //nubia dtb offset
+   	dtb_base =   0x00000100;   //nubia dtb offset
 	add_segment_phys_virt(info, dtb_2.buf, dtb_2.size,
 		dtb_base, dtb_2.size, 0);
 #else
