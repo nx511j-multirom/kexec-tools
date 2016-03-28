@@ -63,7 +63,10 @@ LOCAL_C_INCLUDES +=              $(LOCAL_PATH)/kexec/arch/arm64/include \
                                  $(LOCAL_PATH)/kexec
 LOCAL_CFLAGS += -include $(LOCAL_PATH)/kexec/arch/arm64/kexec-arm64.h \
                 -include $(LOCAL_PATH)/kexec/arch/arm64/crashdump-arm64.h
-
+#for nubia z9 mini(nx511j)
+ifeq ($(PRODUCT_MODEL),NX511J)
+	LOCAL_CFLAGS += -DNUBIA_NX511J_KERNEL_IMAGE_SIZE
+endif
 LOCAL_FORCE_STATIC_EXECUTABLE := true
 LOCAL_STATIC_LIBRARIES        := mrom_libutil_kt libz libc
 LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)

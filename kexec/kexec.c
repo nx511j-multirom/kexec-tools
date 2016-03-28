@@ -118,9 +118,12 @@ int valid_memory_range(struct kexec_info *info,
 {
 	int i;
 	if (sstart > send) {
+		fprintf(stderr, "%s:%d: send = %p > mem_max = %p\n",__func__,__LINE__,sstart,send);
 		return 0;
 	}
 	if ((send > mem_max) || (sstart < mem_min)) {
+        fprintf(stderr, "%s:%d: send = %p > mem_max = %p\n",__func__,__LINE__,send,mem_max);
+	fprintf(stderr, "%s:%d: sstart = %p && mem_min = %p\n",__func__,__LINE__,sstart,mem_min);
 		return 0;
 	}
 	for (i = 0; i < info->memory_ranges; i++) {
@@ -134,12 +137,25 @@ int valid_memory_range(struct kexec_info *info,
 		    && mend == info->memory_range[i+1].start
 		    && info->memory_range[i+1].type == RANGE_RAM)
 			mend = info->memory_range[i+1].end;
-
+        /* check if kernel_code begin */
+	/*
+          if (mstart == 0x80080000ULL) {
+              fprintf(stderr, "it's the kernel code begin");
+              //modified the mend to compat the kernel
+              mend += 0x1;
+          }
+	*/
 		/* Check to see if we are fully contained */
-		if ((mstart <= sstart) && (mend >= send)) {
+        if ((mstart <= sstart) && (mend  >= send)) {
+            		fprintf(stderr, "%p >= %p\n",mend,send);
 			return 1;
+		} else {
+			fprintf(stderr,"%s:%d ->\n mstart = %p\n sstart = %p\n mend = %p\n send = %p\n\n",
+					__func__,__LINE__,mstart,sstart,mend,send);
+			return 0;
 		}
 	}
+	fprintf(stderr, "%s:%d: end of valid_memory_range\n",__func__,__LINE__);
 	return 0;
 }
 
@@ -345,6 +361,7 @@ void add_segment_phys_virt(struct kexec_info *info,
 
 	last = base + memsz -1;
 	if (!valid_memory_range(info, base, last)) {
+		fprintf(stderr,"%s:%d->\n",__func__,__LINE__);
 		die("Invalid memory segment %p - %p\n",
 			(void *)base, (void *)last);
 	}
@@ -795,6 +812,7 @@ static int my_load(const char *type, int fileind, int argc, char **argv,
 	/* Verify all of the segments load to a valid location in memory */
 	for (i = 0; i < info.nr_segments; i++) {
 		if (!valid_memory_segment(&info, info.segment +i)) {
+            		fprintf(stderr,"test for kexec");
 			fprintf(stderr, "Invalid memory segment %p - %p\n",
 				info.segment[i].mem,
 				((char *)info.segment[i].mem) + 

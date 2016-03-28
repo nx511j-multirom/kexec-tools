@@ -525,9 +525,9 @@ static int setup_2nd_dtb(char *command_line, struct dtb *dtb_2)
 	int result;
 
 	result = fdt_check_header(dtb_2->buf);
-
 	if (result) {
 		fprintf(stderr, "kexec: Invalid 2nd device tree.\n");
+		fprintf(stderr, "nubia z9 mini fdt_magic = 0x%lx\n",fdt_magic(dtb_2->buf));
 		return -EINVAL;
 	}
 
@@ -689,7 +689,8 @@ int arm64_load_other_segments(struct kexec_info *info,
 	}
 
 #if 1
-	dtb_base =   0xc0000000;  // nubia dtb offset 
+	//dtb_base =   0xc0000000;  // nubia dtb offset  0x01E00000
+	dtb_base =   0x01E00000;  //pick up from https://github.com/CyanogenMod/android_device_zte_nx510j/blob/cm-13.0/BoardConfig.mk
 	add_segment_phys_virt(info, dtb_2.buf, dtb_2.size,
 		dtb_base, dtb_2.size, 0);
 #else
@@ -770,13 +771,30 @@ int arm64_process_image_header(const struct arm64_image_header *h)
 #if !defined(KERNEL_IMAGE_SIZE)
 # define KERNEL_IMAGE_SIZE (768 * 1024)
 #endif
+//for nubia z9 mini(nx511j)
+/*
+ * kernel image size  = 21.0 MB
+ * but _etext - _text  = 0x1229E53 -> 18.1MB 
+ *
+*/
 
 	if (!arm64_header_check_magic(h))
 		return -EINVAL;
 
 	if (h->image_size) {
 		arm64_mem.text_offset = le64_to_cpu(h->text_offset);
+
+//#if defined(NUBIA_NX511J_KERNEL_IMAGE_SIZE)
+/*
+		arm64_mem.image_size = 0x1229E53;
+#else
+*/
 		arm64_mem.image_size = le64_to_cpu(h->image_size);
+		dbgprintf("%s:%d: %016lx: arm64_process_image_header:\n", __func__,
+			__LINE__,arm64_mem.image_size );
+		
+//#endif
+
 	} else {
 		/* For 3.16 and older kernels. */
 		arm64_mem.text_offset = 0x80000;
@@ -907,6 +925,7 @@ static int get_memory_ranges_iomem(struct memory_range *array,
 		if (*count >= KEXEC_SEGMENT_MAX)
 			break;
 
+		//if (sscanf(line, "%Lx-%Lx : %n", &r.start, &r.end, &consumed)
 		if (sscanf(line, "%Lx-%Lx : %n", &r.start, &r.end, &consumed)
 			!= 2)
 			continue;
