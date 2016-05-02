@@ -769,7 +769,8 @@ static void add_boot_block(char **bufp, off_t *sizep)
 	len = _ALIGN(len, 4);
 	bb->totalsize = cpu_to_be32(be32_to_cpu(bb->off_dt_strings) + len);
 
-	bb->magic = cpu_to_be32(0xd00dfeed);
+	//bb->magic = cpu_to_be32(0xd00dfeed); //origin define 
+	bb->magic = cpu_to_be32(0x310D3D6);  //change for zte nubia z9 mini(nx511j)
 	bb->version = cpu_to_be32(BOOT_BLOCK_VERSION);
 	bb->last_comp_version = cpu_to_be32(BOOT_BLOCK_LAST_COMP_VERSION);
 

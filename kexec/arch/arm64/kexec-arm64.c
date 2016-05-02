@@ -690,7 +690,7 @@ int arm64_load_other_segments(struct kexec_info *info,
 
 #if 1
 	//dtb_base =   0xc0000000;  // nubia dtb offset  0x01E00000
-	dtb_base =   0x01E00000;  //pick up from https://github.com/CyanogenMod/android_device_zte_nx510j/blob/cm-13.0/BoardConfig.mk
+	dtb_base =   0x81e00000;  //pick up from MultiromYU
 	add_segment_phys_virt(info, dtb_2.buf, dtb_2.size,
 		dtb_base, dtb_2.size, 0);
 #else
